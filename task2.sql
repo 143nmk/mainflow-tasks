@@ -59,18 +59,26 @@ INSERT INTO Enrolments (enrolment_id, student_id, course_id, enrolment_date) VAL
 select * from Enrolments;
 
 
+-- List all students and the courses they are enrolled in
 SELECT s.name AS student_name, c.course_name
 FROM Students s
 INNER JOIN Enrolments e ON s.student_id = e.student_id
 INNER JOIN Courses c ON e.course_id = c.course_id;
 
+--Find the number of students enrolled in each course
 SELECT c.course_id, c.course_name, COUNT(e.student_id) AS enrolled_students
 FROM Courses c
 LEFT JOIN Enrolments e ON c.course_id = e.course_id
 GROUP BY c.course_id, c.course_name;
 
+--List students who have enrolled in more than one course
+SELECT e.student_id, s.name, COUNT(e.course_id) AS enrolled_courses
+FROM Enrolments e
+INNER JOIN Students s ON e.student_id = s.student_id
+GROUP BY e.student_id, s.name
+HAVING COUNT(e.course_id) > 1;
 
-
+--Find courses with no enrolled students
 SELECT c.course_id, c.course_name
 FROM Courses c
 LEFT JOIN Enrolments e ON c.course_id = e.course_id
